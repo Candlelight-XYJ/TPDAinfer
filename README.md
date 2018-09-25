@@ -1,2 +1,2 @@
 # The-TPDA-algorithm-to-develop-a-efficiency-bayesian-network
-A new bayesian network develop algorithms 
+A new bayesian network develop algorithm
