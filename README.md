@@ -1,2 +1,2 @@
-# The-TPDA-algorithm-to-develop-a-efficiency-bayesian-network
-A new bayesian network develop algorithm
+# develop TPDA algorithm and Bayesian inferrence to mining gene-gene relationship
+
