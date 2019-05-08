@@ -2,9 +2,11 @@
 
 
 ## Publication & How to Cite
-The TPDApipe publication can be found in: http://www.ncbi.nlm.nih.gov/pubmed/xxxxxx
-If you used this pipeline for your analysis, please cite: YuJia Xiang,JianXiao Liu (2019). TPDAPipe: a bayesian network workflow to mining gene-gene relationships. Bioinformatics, DOI:XXXXXXX
-Thanks in advance!
++ The TPDApipe publication can be found in: http://www.ncbi.nlm.nih.gov/pubmed/xxxxxx
+
++ If you used this pipeline for your analysis, please cite: YuJia Xiang,JianXiao Liu (2019). TPDAPipe: a bayesian network workflow to mining gene-gene relationships. Bioinformatics, DOI:XXXXXXX
+
++ Thanks in advance!
 
 ## Files including
 + 0-compute_mutual_info.py
