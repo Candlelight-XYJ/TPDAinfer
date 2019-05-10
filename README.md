@@ -22,21 +22,63 @@ By using our workflow,the first thing to do is to computate mutual information o
 #### 2) Using advanced TPDA algorithms to construct Bayesian network
 We provide the source code of TPDA algorithm (Script `1-TPDA_construct_BN.R`),to help user construct Bayesian network .
 Open the script ,you need provide 6 parameters
-+ weight_1, weight_2, weight_3
++ **weight_1, weight_2, weight_3**
 
 This is the threshold for user to set,different weight will construct different BN structure. The default weight is 0.01, We suggest user use proper weight for your special data.
 
-+ input_path
++ **input_path**
 This is the file path, you input your gene expression data file
 
-+ gene2MI_path
++ **gene2MI_path**
 This is a Output path, Outputting primary MI values
 
-+ network_structure_path
++ **network_structure_path**
 This is a Output path, Outputting the BN result of TPDA
 
 #### 3) Parameter learning
+We provide Script `2-parameter_learning_and_BN_infer.R` for user to learn parameters for their Bayesian network. 
++ **`First`** input your files path
+```r
+input_path <- "E:\\GitHub\\TPDA\\testData\\bayesinput.csv"
+TPDA_structure <- "E:\\GitHub\\TPDA\\outputData\\2_TDPA_structure.csv"
+```
++ **`Second`**  using  Data Preprocess function to format input data
+```r
+mydata <- dfProcess(input_path)
+```
++ **`Third`**  Using TPDA structure result and graphNEL() to construct Network in R
+```r
+library(graph)
+result<-read.csv(TPDA_structure,stringsAsFactors = FALSE) ## input TPDA algorithm result
+v<-union(result[,1],result[,2])
+edL=vector("list",length=length(v)) ## length(v) is the num of gene nodes
+names(edL)<-v
+for(i in 1:length(v))
+{ edge_num<-0
+nodename<-names(edL[i])
+node_edge<-c()
+for(j in 1:nrow(result))
+{ 
+  if(as.character(result[j,1])==nodename) 
+  {       
+    son_node<-as.character(result[j,2])
+    node_edge<-c(node_edge,son_node)
+  } 
+}
+edL[[i]]<-list(edges=node_edge)
+}
+gR <- graphNEL(nodes=v, edgeL=edL,edgemode = "directed")
+gRbn<-as.bn(gR) ##convert gR to bnlearn object
 
+```
 
++ **`Fourth`** Parameter Learning
+Using function `bn.fit` in R package bnlearn, to learn you BN parameters
+```r
+set.seed(1000)## setting seeds
+fitted_time<-system.time(fitted<-bn.fit(gRbn,data = mydata,method='bayes')) 
+fitted_time ## show learning times
+```
 
 #### 4) Bayesian inferrence
+

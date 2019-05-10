@@ -34,9 +34,9 @@ mydata <- dfProcess(input_path)
 
 
 
-#######################################################################
-##  Using TPDA structure and graphNEL() to construct Network in R    ##
-#######################################################################
+##############################################################################
+##  Using TPDA structure result and graphNEL() to construct Network in R    ##
+##############################################################################
 library(graph)
 result<-read.csv(TPDA_structure,stringsAsFactors = FALSE) ## input TPDA algorithm result
 v<-union(result[,1],result[,2])
