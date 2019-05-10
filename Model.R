@@ -25,15 +25,13 @@ allfiles <- list.files(getwd())
 for(kkk in 1:length(allfiles)){
   print(kkk)
 
-input_path <- allfiles[kkk]
-c2link_path <- paste0("E:\\学习资料存放处\\贝叶斯网络\\陈圆圆师姐\\RFO金敏整理给刘老师\\输出数据\\tpda\\"
-                              ,strsplit(allfiles[kkk],"qq")[[1]][1],"c2link.csv")
-network_structure_path <- paste0("E:\\学习资料存放处\\贝叶斯网络\\陈圆圆师姐\\RFO金敏整理给刘老师\\输出数据\\tpda\\"
-                                         ,strsplit(allfiles[kkk],"qq")[[1]][1],"Structure.csv")
+input_path <- "E:\\GitHub\\TPDA\\testData\\bayesinput.csv"
+c2link_path <- "E:\\GitHub\\TPDA\\outputData\\1_gene2MI.csv"
+network_structure_path <- "E:\\GitHub\\TPDA\\outputData\\2_TDPA_structure.csv"
 delete_col_path <- paste0("E:\\学习资料存放处\\贝叶斯网络\\陈圆圆师姐\\RFO金敏整理给刘老师\\输出数据\\tpda\\"
                           ,strsplit(allfiles[kkk],"qq")[[1]][1],"已处理.csv")
 output_lisan_path <- paste0(strsplit(allfiles[kkk],"qq")[[1]][1],"_lisan.csv")
-pheno_name <- read.csv("E:\\学习资料存放处\\贝叶斯网络\\陈圆圆师姐\\RFO金敏整理给刘老师\\Second_qq后的数据\\Gala_phenoname.csv", stringsAsFactors = F)
+pheno_name <- "E:\\GitHub\\TPDA\\testData\\pheno.csv"
 
 ####################
 ## 数据标准化函数 ## dataframe qqnorm (dfQqnorm)

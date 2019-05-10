@@ -18,7 +18,7 @@ weight_3 <- 0.01     #Third phase MI threshold
 
 
 ##########################
-##  input files` paths  ##
+##     files‘ paths     ##
 ##########################
 input_path <- "E:\\GitHub\\TPDA\\testData\\bayesinput.csv"
 gene2MI_path <- "E:\\GitHub\\TPDA\\outputData\\1_gene2MI.csv"
@@ -297,7 +297,7 @@ TPDA_algorithm <- function(weight_1,weight_2,weight_3,
   for(i in 1:length(result[,1])){
     result[i,] <- Translat(result[i,])
   }
-  
+  return(result)
 }
 
 
@@ -312,8 +312,7 @@ write.csv(gene2MI,gene2MI_path,row.names = F)
 ##(3) start TPDA
 result <- TPDA_algorithm(weight_1,weight_2,weight_3,
                          input_path,
-                         gene2MI_path,
-                         network_structure_path)
+                         gene2MI_path)
 ##(4) start TPDA
 # network_structure_path : the file path for outputting bayesian network structure constructed by TPDA
 write.csv(result,network_structure_path,row.names = F)  ## output TPDA result
