@@ -23,8 +23,20 @@ By using our workflow,the first thing to do is to computate mutual information o
 We provide the source code of TPDA algorithm (Script `1-TPDA_construct_BN.R`),to help user construct Bayesian network .
 Open the script ,you need provide 6 parameters
 + weight_1, weight_2, weight_3
-This is 
+
+This is the threshold for user to set,different weight will construct different BN structure. The default weight is 0.01, We suggest user use proper weight for your special data.
+
++ input_path
+This is the file path, you input your gene expression data file
+
++ gene2MI_path
+This is a Output path, Outputting primary MI values
+
++ network_structure_path
+This is a Output path, Outputting the BN result of TPDA
 
 #### 3) Parameter learning
+
+
 
 #### 4) Bayesian inferrence
