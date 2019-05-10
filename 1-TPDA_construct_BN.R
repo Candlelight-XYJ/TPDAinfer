@@ -1,18 +1,17 @@
 #################################################################
 ## Using advanced TPDA algorithm to construct Bayesian Network ##
 #################################################################
+rm(list = ls())
 
 ########################
 ## library R packages ##
 ########################
-
 library(igraph)
 library(bnlearn)
 
 #########################
 ## setting  thresholds ##
 #########################
-
 weight_1 <- 0.01     #First phase MI threshold
 weight_2 <- 0.01     #Second phase MI threshold
 weight_3 <- 0.01     #Third phase MI threshold
@@ -21,19 +20,13 @@ weight_3 <- 0.01     #Third phase MI threshold
 ##########################
 ##  input files` paths  ##
 ##########################
-
-input_path <- 
-c2link_path <- 
-network_structure_path <- 
-delete_col_path <- 
-output_lisan_path <- 
-pheno_name <- 
-
+input_path <- "E:\\GitHub\\TPDA\\testData\\bayesinput.csv"
+gene2MI_path <- "E:\\GitHub\\TPDA\\outputData\\1_gene2MI.csv"
+network_structure_path <- "E:\\GitHub\\TPDA\\outputData\\2_TDPA_structure.csv"
 
 ############################
 ##  Preprocess Functions  ##
 ############################
-
 ##(1) data preprocessing  
 dfProcess <- function(input_path){
   
@@ -133,11 +126,10 @@ getMI <- function(df, weight){
 ##(4) Calculating conditional mutual info
 #######################
 # prameter description
-# gxi 源点
-# gyi 目标
-# cutset 割点
-# gen 所有数据
-
+# gxi source node
+# gyi target node
+# cutset cutoff
+# gen all genes
 getCMI <- function(gxi, gyi,cutset,gen){
   cutset<-data.frame(cutset,stringsAsFactors = F)
   x<-c()
@@ -194,28 +186,21 @@ getCMI <- function(gxi, gyi,cutset,gen){
   cmi=0.5*log(t)
 }
 
-##write.csv(c2link,c2link_path,row.names = F) 
 
-
-##########################################
-## begin to construct bayesian network ###
-##########################################
-
-##(1) data process
-z <- dfProcess(input_path)
-##(2) get primary mutual information
-c2link <- getMI(z, weight_1)
-
-##(3) start TPDA
+##(5) Three Phase Development Algorithm
+#######################
+# prameter description
+# weight_1,weight_2,weight_3 : mutual info threshold
+# input_path : the file path which you input
+# gene2MI_path : the file path for outputting gene-gene mutual information
 TPDA_algorithm <- function(weight_1,weight_2,weight_3,
                            input_path,
-                           Mutual_info,
-                           
-                           
-                           ){
+                           gene2MI_path){
   
   gene<-read.csv(input_path,header = FALSE,stringsAsFactors = FALSE)############此处输入数据
-  build_data <- c2link ## MI values data table
+  #build_data <- gene2MI ## MI values data table
+  build_data <- read.csv(gene2MI_path,header = T,stringsAsFactors = F)
+  
   ck <- union(build_data$from,build_data$to)
   lname<-gene[,1]
   gene<-gene[-1,]
@@ -316,9 +301,21 @@ TPDA_algorithm <- function(weight_1,weight_2,weight_3,
 }
 
 
-
+##########################################
+## begin to construct bayesian network ###
+##########################################
+##(1) data process
+z <- dfProcess(input_path)
+##(2) get primary mutual information
+gene2MI <- getMI(z, weight_1)
+write.csv(gene2MI,gene2MI_path,row.names = F)
+##(3) start TPDA
+result <- TPDA_algorithm(weight_1,weight_2,weight_3,
+                         input_path,
+                         gene2MI_path,
+                         network_structure_path)
+##(4) start TPDA
+# network_structure_path : the file path for outputting bayesian network structure constructed by TPDA
 write.csv(result,network_structure_path,row.names = F)  ## output TPDA result
-
-
 
 
