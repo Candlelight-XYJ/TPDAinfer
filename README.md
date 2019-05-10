@@ -27,13 +27,31 @@ Open the script ,you need provide 6 parameters
 This is the threshold for user to set,different weight will construct different BN structure. The default weight is 0.01, We suggest user use proper weight for your special data.
 
 + **input_path**
+
 This is the file path, you input your gene expression data file
 
 + **gene2MI_path**
+
 This is a Output path, Outputting primary MI values
 
 + **network_structure_path**
+
 This is a Output path, Outputting the BN result of TPDA
+
+After providing input file paths,you can do as follows:
++ **`First`** load Preprocess Functions
+  + dfProcess <- function(input_path)
+  + getDoubleHang_value<-function(mylist1,mylist2)
+  + getMI <- function(df, weight)
+  + getCMI <- function(gxi, gyi,cutset,gen)
+
++ **`Second`** load Three Phase Development Algorithm Function
+
+TPDA_algorithm <- function(weight_1,weight_2,weight_3,
+                           input_path,
+                           gene2MI_path)
+
+
 
 #### 3) Parameter learning
 We provide Script `2-parameter_learning_and_BN_infer.R` for user to learn parameters for their Bayesian network. 
