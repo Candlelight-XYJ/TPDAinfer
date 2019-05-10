@@ -29,7 +29,7 @@ dfProcess <- function(input_path){
   mydata <- data.frame((tpN))  
   return(mydata)
 }
-## 
+## preprocess our input data
 mydata <- dfProcess(input_path)
 
 
@@ -81,13 +81,14 @@ for(i in 1:ncol(mydata))
   lisan<-rbind(lisan,t(as.data.frame(xx)))
 }
 add_rowname<-read.csv(input_path) 
-all_rowname<-add_rowname[,1]                    ##取出基因名称
+all_rowname<-add_rowname[,1]                    ##add gene names
 ##no_repeat<-read.csv(output_lisan_path)   
 no_repeat<-lisan
-no_repeat$X<-add_rowname[,1]                    ##将基因名称和得到的区间整合
+no_repeat$X<-add_rowname[,1]                    ##combine gene name and quantile intervals
 head(no_repeat)
 
 ## (2)bayes infer
+## Calculating the reasoning probability of Gene 1 and Gene 2 for phenotype 1
 cpquery(fitted,
         event = (pheno1=='(0.015,2.97]'),
         evidence =((gene1=='[-3,-0.00341]')&(gene2=='(-0.0443,3]')))
