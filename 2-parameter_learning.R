@@ -49,7 +49,7 @@ edL[[i]]<-list(edges=node_edge)
 }
 gR <- graphNEL(nodes=v, edgeL=edL,edgemode = "directed")
 
-gRbn<-as.bn(gR)  ##将gR化为bn格式，才能进行推理
+gRbn<-as.bn(gR)  ##convert gR to bnlearn object
 
 
 

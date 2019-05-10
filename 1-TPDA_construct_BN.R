@@ -22,7 +22,7 @@ weight_3 <- 0.01     #Third phase MI threshold
 ##  input files` paths  ##
 ##########################
 
-input_path <-
+input_path <- 
 c2link_path <- 
 network_structure_path <- 
 delete_col_path <- 
@@ -205,105 +205,117 @@ getCMI <- function(gxi, gyi,cutset,gen){
 z <- dfProcess(input_path)
 ##(2) get primary mutual information
 c2link <- getMI(z, weight_1)
-##(3) data structure 
-gene<-read.csv(input_path,header = FALSE,stringsAsFactors = FALSE)############此处输入数据
-build_data <- c2link ## MI values data table
-ck <- union(build_data$from,build_data$to)
-lname<-gene[,1]
-gene<-gene[-1,]
-labe<-intersect(lname,ck)
 
-#covert n.x to gene.node 
-Translat <- function(data_nx){
-  retdata <- data_nx
-  for(i in 1:length(data_nx)){
-    retdata[i] <- labe[which( trans_labe == data_nx[i])]
+##(3) start TPDA
+TPDA_algorithm <- function(weight_1,weight_2,weight_3,
+                           input_path,
+                           Mutual_info,
+                           
+                           
+                           ){
+  
+  gene<-read.csv(input_path,header = FALSE,stringsAsFactors = FALSE)############此处输入数据
+  build_data <- c2link ## MI values data table
+  ck <- union(build_data$from,build_data$to)
+  lname<-gene[,1]
+  gene<-gene[-1,]
+  labe<-intersect(lname,ck)
+  
+  #covert n.x to gene.node 
+  Translat <- function(data_nx){
+    retdata <- data_nx
+    for(i in 1:length(data_nx)){
+      retdata[i] <- labe[which( trans_labe == data_nx[i])]
+    }
+    return(retdata)
   }
-  return(retdata)
-}
-#covert gene object to n.x object
-trans_labe<-c()
-for(i in 1:length(labe)){ trans_labe<-c(trans_labe,paste("n.",i,sep = "")) }
-ct<-c()
-snum<-length(build_data$from)
-for(i in 1:snum){ ct<-c(ct,build_data[i,1],build_data[i,2]) }
-for(i in 1:length(ct)){ 
-  #print(paste(i,ct[i]))
-  ct[i]<-paste("n.",which(labe == ct[i]),sep = "") 
-}
-
-
-##(4)Start TPDA 
-##=====================##
-##   The first phase   ##
-##---------------------##
-graE<-c()
-graR<-c()
-for(i in seq(1,length(ct),2)){
-  if( length(union(graE,graE)) !=length(union(graE,c(ct[i],ct[i+1])))  ){
-    graE<-c(graE,ct[i],ct[i+1])
-    g<- graph(graE, directed=T)
-  }else{
-    #print(paste(ct[i],"+",ct[i+1]))
-    if(edge_connectivity(g, source = ct[i], target = ct[i+1], checks = TRUE) == 0){
+  #covert gene object to n.x object
+  trans_labe<-c()
+  for(i in 1:length(labe)){ trans_labe<-c(trans_labe,paste("n.",i,sep = "")) }
+  ct<-c()
+  snum<-length(build_data$from)
+  for(i in 1:snum){ ct<-c(ct,build_data[i,1],build_data[i,2]) }
+  for(i in 1:length(ct)){ 
+    #print(paste(i,ct[i]))
+    ct[i]<-paste("n.",which(labe == ct[i]),sep = "") 
+  }
+  
+  
+  ##(4)Start TPDA 
+  ##=====================##
+  ##   The first phase   ##
+  ##---------------------##
+  graE<-c()
+  graR<-c()
+  for(i in seq(1,length(ct),2)){
+    if( length(union(graE,graE)) !=length(union(graE,c(ct[i],ct[i+1])))  ){
       graE<-c(graE,ct[i],ct[i+1])
-      g <- graph(graE, directed=T)
-    }
-    else{
-      graR<-c(graR,ct[i],ct[i+1])
-    }
-  }
-}
-
-##======================##
-##   The second phase   ##
-##----------------------##
-print(length(graR))
-g <- graph(graE, directed=F)
-for(i in  seq(1,length(graR),2)){
-  #save path as n.x to one_path 
-  shortpa<-shortest_paths(g, from = graR[i], to = graR[i+1], mode = c("all"))$vpath
-  one_path<-names(V(g))[as.integer(shortpa[[1]])]
-  #compute cutpoint and MI
-  brek <- one_path[-c(1,length(one_path))]
-  if(length(brek) == 0){
-    #print(" brek=0! ")          ################      
-    info = 1                     #     出错     #
-  }else{                         #     位置     #
-    #print(" do! ")              ################
-    info <- getCMI(Translat(graR[i]),Translat(graR[i+1]),Translat(brek),gene)
-    #print(info) 
-  }
-  print(i)  #2016.8.8
-  if(info > weight_2){ graE <- c(graE,graR[i],graR[i+1]) } #如果互信息大于weight_2则添加
-}
-rm("one_path","i","shortpa","info","brek","graR")
-
-##=====================##
-##   The Third phase   ##
-##---------------------##
-g<- graph(graE, directed=F)
-print(length(graE))
-for(i in  seq(1,length(graE),2)){
-  g_d <- g - edge(paste(graE[i],"|",graE[i+1],sep = ""))  
-  if( edge_connectivity(g_d, source = graE[i], target = graE[i+1], checks = TRUE) > 0){
-    shortpa<-shortest_paths(g_d, from = graE[i], to = graE[i+1], mode = c("all"))$vpath
-    one_path<-names(V(g))[as.integer(shortpa[[1]])]
-    brek <- one_path[-c(1,length(one_path))]
-    if(length(brek) > 0){
-      print(brek)
-      info <- getCMI(Translat(graE[i]),Translat(graE[i+1]),Translat(brek),gene)
-      #print(info)
-      if(info < weight_3){ g <- g_d } #如果互信息小于weight_3，那么久确定删除
+      g<- graph(graE, directed=T)
     }else{
-      print(i)
+      #print(paste(ct[i],"+",ct[i+1]))
+      if(edge_connectivity(g, source = ct[i], target = ct[i+1], checks = TRUE) == 0){
+        graE<-c(graE,ct[i],ct[i+1])
+        g <- graph(graE, directed=T)
+      }
+      else{
+        graR<-c(graR,ct[i],ct[i+1])
+      }
     }
   }
+  
+  ##======================##
+  ##   The second phase   ##
+  ##----------------------##
+  print(length(graR))
+  g <- graph(graE, directed=F)
+  for(i in  seq(1,length(graR),2)){
+    #save path as n.x to one_path 
+    shortpa<-shortest_paths(g, from = graR[i], to = graR[i+1], mode = c("all"))$vpath
+    one_path<-names(V(g))[as.integer(shortpa[[1]])]
+    #compute cutpoint and MI
+    brek <- one_path[-c(1,length(one_path))]
+    if(length(brek) == 0){
+      #print(" brek=0! ")          ################      
+      info = 1                     #     出错     #
+    }else{                         #     位置     #
+      #print(" do! ")              ################
+      info <- getCMI(Translat(graR[i]),Translat(graR[i+1]),Translat(brek),gene)
+      #print(info) 
+    }
+    print(i)  #2016.8.8
+    if(info > weight_2){ graE <- c(graE,graR[i],graR[i+1]) } #如果互信息大于weight_2则添加
+  }
+  rm("one_path","i","shortpa","info","brek","graR")
+  
+  ##=====================##
+  ##   The Third phase   ##
+  ##---------------------##
+  g<- graph(graE, directed=F)
+  print(length(graE))
+  for(i in  seq(1,length(graE),2)){
+    g_d <- g - edge(paste(graE[i],"|",graE[i+1],sep = ""))  
+    if( edge_connectivity(g_d, source = graE[i], target = graE[i+1], checks = TRUE) > 0){
+      shortpa<-shortest_paths(g_d, from = graE[i], to = graE[i+1], mode = c("all"))$vpath
+      one_path<-names(V(g))[as.integer(shortpa[[1]])]
+      brek <- one_path[-c(1,length(one_path))]
+      if(length(brek) > 0){
+        print(brek)
+        info <- getCMI(Translat(graE[i]),Translat(graE[i+1]),Translat(brek),gene)
+        #print(info)
+        if(info < weight_3){ g <- g_d } #如果互信息小于weight_3，那么久确定删除
+      }else{
+        print(i)
+      }
+    }
+  }
+  result <- as_edgelist(g, names = TRUE) # TPDA result
+  for(i in 1:length(result[,1])){
+    result[i,] <- Translat(result[i,])
+  }
+  
 }
-result <- as_edgelist(g, names = TRUE) # TPDA result
-for(i in 1:length(result[,1])){
-  result[i,] <- Translat(result[i,])
-}
+
+
 
 write.csv(result,network_structure_path,row.names = F)  ## output TPDA result
 
