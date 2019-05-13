@@ -99,4 +99,5 @@ fitted_time ## show learning times
 ```
 
 #### 4) Bayesian inferrence
-
+In script 
+`2-parameter_learning_and_BN_infer.R`
