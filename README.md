@@ -1,4 +1,4 @@
-## What is TPDApipe
+## A bayesian network workflow to mine gene-gene and gene-pheno relationships
 
 
 ## Publication & How to Cite
@@ -38,7 +38,8 @@ This is a Output path, Outputting primary MI values
 
 This is a Output path, Outputting the BN result of TPDA
 
-After providing input file paths,you can do as follows:
+After providing file paths,you can do as follows:
+
 + **`First`** load Preprocess Functions
   + dfProcess <- function(input_path)
   + getDoubleHang_value<-function(mylist1,mylist2)
