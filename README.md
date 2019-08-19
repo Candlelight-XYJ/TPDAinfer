@@ -16,8 +16,9 @@
 
 #### 1) Installation
 + Install the latest development version from GitHub with
+```r
 devtools::install_github("Candlelight-XYJ/TPDA")
-
+```
 
 #### 2) Data preprocessing
 
