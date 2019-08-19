@@ -10,7 +10,30 @@
 
 ## Files including
 + An R package `TPDAinfer`
++ Bestpractice.R
 
 ## Best Practice
+
+#### 1) Installation
++ Install the latest development version from GitHub with
+devtools::install_github("Candlelight-XYJ/TPDA")
+
+
+#### 2) Data preprocessing
+
+
+#### 3) Computating mutual information
+
+
+#### 4) Using advanced TPDA algorithms to construct Bayesian network
+
+
+#### 5) Construct Bayesian network in R
+
+
+#### 6) Parameter Learning
+
+
+#### 7) Bayes Inferrence
 
 
