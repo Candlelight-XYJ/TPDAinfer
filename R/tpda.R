@@ -287,6 +287,7 @@ getCMI <- function(gxi, gyi,cutset,gen){
   }
   t=det(cov(cut_x))*det(cov(cut_y))/(det(cov(cut))*det(cov(cut_x_y)))
   cmi=0.5*log(t)
+  return(cmi)
 }
 
 
