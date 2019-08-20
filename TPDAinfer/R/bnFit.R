@@ -7,7 +7,7 @@
 ##' Converting TPDA structure result to bnlearn network format
 ##' @param TPDAstruct
 ##' @return bayesian network structure
-##' @import graph, bnlearn
+##' @importFrom graph graphNEL
 ##' @description Using TPDA structure result and graphNEL() to construct Network in R
 convertBN <- function(TPDAstruct){
   v<-union(TPDAstruct[,1],TPDAstruct[,2])

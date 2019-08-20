@@ -15,28 +15,28 @@ library(TPDAinfer)
 ##(1) data preprocessing
 options(stringsAsFactors = F)
 expMatrix <- read.csv("data/bayesinput.csv") # with header
-expMatrix <- dfProcess(expMatrix)
+expMatrix <- TPDAinfer::dfProcess(expMatrix)
 ##(2) get primary mutual information
-gene2MI <- getMI(expMatrix, weight=0.01)
+gene2MI <- TPDAinfer::getMI(expMatrix, weight=0.01)
 head(gene2MI)
 ##(3) start TPDA
 weight1=0.01
 weight2=0.01
 weight3=0.01
 filePath="data/bayesinput.csv"
-TPDAresult <- TPDA_algorithm(filePath,
+TPDAresult <- TPDAinfer::TPDA_algorithm(filePath,
                          weight1,
                          weight2,
                          weight3,
                          gene2MI)
 ##(4) construct Bayesian network in R
-BN <- convertBN(TPDAresult)
+BN <- TPDAinfer::convertBN(TPDAresult)
 ##(5) Parameter Learning
 set.seed(1000) # setting seeds
 ## data discretize
-expData <- discretize(data.frame(t(expMatrix)), method ='quantile', breaks=2 )
+expData <- bnlearn::discretize(data.frame(t(expMatrix)), method ='quantile', breaks=2 )
 rownames(expData) <- colnames(expMatrix)
-fitted_time<-system.time(fitted<-bn.fit(BN,data = expData,method='bayes')) # bayes only for discrete data
+fitted_time<-system.time(fitted<-bnlearn::bn.fit(BN,data = expData,method='bayes')) # bayes only for discrete data
 fitted_time # show learning times
 
 #############################

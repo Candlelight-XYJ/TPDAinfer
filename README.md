@@ -21,20 +21,74 @@ devtools::install_github("Candlelight-XYJ/TPDA")
 ```
 
 #### 2) Data preprocessing
-
-
++ Using `dfProcess` function to preprocess expression data
+```r
+rm(list = ls())
+library(igraph)
+library(graph)
+library(bnlearn)
+library(TPDAinfer)
+options(stringsAsFactors = F)
+expMatrix <- read.csv("data/bayesinput.csv") # with header
+expMatrix <- TPDAinfer::dfProcess(expMatrix,discrete=F)
+```
 #### 3) Computating mutual information
-
++ Preparing primary mutual information for next structure learning
+```r
+gene2MI <- TPDAinfer::getMI(expMatrix, weight=0.01)
+head(gene2MI)
+```
 
 #### 4) Using advanced TPDA algorithms to construct Bayesian network
+```r
+weight1=0.01
+weight2=0.01
+weight3=0.01
+filePath="data/bayesinput.csv"
+TPDAresult <- TPDAinfer::TPDA_algorithm(filePath,
+                                         weight1,
+                                         weight2,
+                                         weight3,
+                                         gene2MI)
+```
 
+#### 5) Convert data.frame to graph format
++ Converting TPDA network result to bnlearn graph format in R 
+```r
+BN <- TPDAinfer::convertBN(TPDAresult)
+```
 
-#### 5) Construct Bayesian network in R
+#### 6) Parameter learning
+```r
+set.seed(1000) # setting seeds
+## data discretize
+expData <- bnlearn::discretize(data.frame(t(expMatrix)), method ='quantile', breaks=2 )
+rownames(expData) <- colnames(expMatrix)
+fitted_time<-system.time(fitted<-bnlearn::bn.fit(BN,data = expData,method='bayes')) # bayes only for discrete data
+fitted_time # show learning times
+```
 
+#### 7) Bayes inferrence
++ Every gene status
+```r
+nodeStatus <- data.frame()
+for(i in 1:ncol(expData)){
+  print(i)
+  #i=1
+  status <- as.character(unique(expData[,i]))
+  nodeStatus <- rbind(nodeStatus, c(colnames(expData)[i],status))
+}
+head(nodeStatus)
+```
 
-#### 6) Parameter Learning
++ Bayes inferrence
++ Calculating the conditional probability of Gene 1 and Gene 2 for phenotype 1
+```r
+cpquery(fitted,
+        event = (pheno1=='(0.015,2.97]'),
+        evidence =((gene1=='[-3,-0.00341]')&(gene2=='(-0.0443,3]')))
 
-
-#### 7) Bayes Inferrence
-
+## [1] 0.4894299
+## [1] 0.4939955
+```
 

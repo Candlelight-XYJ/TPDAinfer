@@ -6,7 +6,7 @@
 
 ##' Three Phase Development Algorithm
 ##'
-##' @param filePath a data frame containing the expression values
+##' @param filePath a file path of gene expression data
 ##' @param weight1,weight2,weight3 weight values, mutual info threshold for  phase1, phase2, phase3
 ##' @param gene2MI a data frame containing gene-gene mutual information
 ##' @return bayesian network structure
@@ -118,9 +118,8 @@ TPDA_algorithm <- function(filePath, weight1, weight2, weight3, gene2MI){
 ##' @param df a data frame containing the the variables in the model
 ##' @param discrete
 ##' @return a matrix containing cleand values
-##' @import bnlearn
+##' @importFrom bnlearn discretize
 ##' @export
-
 dfProcess <- function(df, discrete=F){
   rownames(df) <- df[,1]
   ## remove df`s rowname and colname

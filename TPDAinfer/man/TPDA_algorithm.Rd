@@ -4,10 +4,10 @@
 \alias{TPDA_algorithm}
 \title{Three Phase Development Algorithm}
 \usage{
-TPDA_algorithm(expMatrix, weight1, weight2, weight3, gene2MI)
+TPDA_algorithm(filePath, weight1, weight2, weight3, gene2MI)
 }
 \arguments{
-\item{expMatrix}{a data frame containing the expression values}
+\item{filePath}{a file path of gene expression data}
 
 \item{weight1, weight2, weight3}{weight values, mutual info threshold for  phase1, phase2, phase3}
 
