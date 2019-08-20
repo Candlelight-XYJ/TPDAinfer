@@ -29,11 +29,11 @@ TPDAresult <- TPDAinfer::TPDA_algorithm(filePath,
                          weight2,
                          weight3,
                          gene2MI)
-##(4) construct Bayesian network in R
+##(4) Construct Bayesian network in R
 BN <- TPDAinfer::convertBN(TPDAresult)
 ##(5) Parameter Learning
 set.seed(1000) # setting seeds
-## data discretize
+## Data discretize
 expData <- bnlearn::discretize(data.frame(t(expMatrix)), method ='quantile', breaks=2 )
 rownames(expData) <- colnames(expMatrix)
 fitted_time<-system.time(fitted<-bnlearn::bn.fit(BN,data = expData,method='bayes')) # bayes only for discrete data
