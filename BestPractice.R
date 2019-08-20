@@ -14,7 +14,7 @@ library(TPDAinfer)
 
 ##(1) data preprocessing
 options(stringsAsFactors = F)
-expMatrix <- read.csv("../testData/bayesinput.csv") # with header
+expMatrix <- read.csv("data/bayesinput.csv") # with header
 expMatrix <- dfProcess(expMatrix)
 ##(2) get primary mutual information
 gene2MI <- getMI(expMatrix, weight=0.01)
@@ -23,7 +23,7 @@ head(gene2MI)
 weight1=0.01
 weight2=0.01
 weight3=0.01
-filePath="../testData/bayesinput.csv"
+filePath="data/bayesinput.csv"
 TPDAresult <- TPDA_algorithm(filePath,
                          weight1,
                          weight2,
@@ -32,37 +32,32 @@ TPDAresult <- TPDA_algorithm(filePath,
 ##(4) construct Bayesian network in R
 BN <- convertBN(TPDAresult)
 ##(5) Parameter Learning
-set.seed(1000)## setting seeds
-expData <- data.frame(t(expMatrix))
-fitted_time<-system.time(fitted<-bn.fit(BN,data = expData,method='mle')) #bayes only for discrete data
-fitted_time ## show learning times
+set.seed(1000) # setting seeds
+## data discretize
+expData <- discretize(data.frame(t(expMatrix)), method ='quantile', breaks=2 )
+rownames(expData) <- colnames(expMatrix)
+fitted_time<-system.time(fitted<-bn.fit(BN,data = expData,method='bayes')) # bayes only for discrete data
+fitted_time # show learning times
 
 #############################
 ##    Bayes Inferrence     ##
 #############################
-## For Inferrence ,  data must be discrete
-expData <-
-
-## (1)preprocess quantile data
-lisan<-data.frame()
-for(i in 1:ncol(expData))
-{
-  xx<-unique(mydata[,i])
-  lisan<-rbind(lisan,t(as.data.frame(xx)))
+## Every gene status
+nodeStatus <- data.frame()
+for(i in 1:ncol(expData)){
+  print(i)
+  #i=1
+  status <- as.character(unique(expData[,i]))
+  nodeStatus <- rbind(nodeStatus, c(colnames(expData)[i],status))
 }
-add_rowname<-read.csv(input_path)
-all_rowname<-add_rowname[,1]                    ##add gene names
-##no_repeat<-read.csv(output_lisan_path)
-no_repeat<-lisan
-no_repeat$X<-add_rowname[,1]                    ##combine gene name and quantile intervals
-head(no_repeat)
+head(nodeStatus)
 
-## (2)bayes infer
-## Calculating the reasoning probability of Gene 1 and Gene 2 for phenotype 1
+## (2)bayes inferrence
+## Calculating the conditional probability of Gene 1 and Gene 2 for phenotype 1
 cpquery(fitted,
         event = (pheno1=='(0.015,2.97]'),
         evidence =((gene1=='[-3,-0.00341]')&(gene2=='(-0.0443,3]')))
 
-## [1] 0.5070332
-
+## [1] 0.4894299
+## [1] 0.4939955
 
