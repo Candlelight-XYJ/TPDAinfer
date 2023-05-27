@@ -8,7 +8,7 @@
 
 + Thanks in advance!
 
-+ Have any questions please email to me [xiangyujia AT ioz.ac.cn]
++ Have any questions please email to me [yujia.xiang AT outlook.com]
 
 ## Files including
 + An R package `TPDAinfer`
